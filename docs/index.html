@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b2638">
+  <meta name="description" content="查询北京市今天、明天、后天的机动车限行尾号，并前往机关服务平台预约公车。">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="公车预约助手">
+  <meta name="apple-itunes-app" content="app-id=1523594749">
+  <title>公车预约助手 · 北京尾号限行</title>
+  <link rel="icon" href="./icons/icon-192.png">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./main.mjs"></script>
+</head>
+<body>
+  <header class="masthead">
+    <div class="shell">
+      <div class="topbar">
+        <div class="brand"><img src="./icons/icon-192.png" width="34" height="34" alt="">公车预约助手</div>
+        <button id="install" class="install" type="button" aria-controls="install-help" aria-expanded="false" hidden>添加到桌面</button>
+      </div>
+      <div id="install-help" class="install-help" hidden></div>
+      <div class="intro">
+        <h1>北京尾号限行</h1>
+        <p>按北京时间更新 · 北京市本地号牌车辆</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell content">
+    <section class="section days" aria-label="近三日限行">
+      <div id="data-alert" class="data-alert" role="status" hidden></div>
+      <div id="three-days" class="three-days" aria-live="polite"><p class="loading">正在读取限行数据…</p></div>
+      <noscript><p class="data-alert">请启用 JavaScript，或前往<a href="https://www.beijing.gov.cn/fuwu/bmfw/bmzt/whts/xxwh/">北京市政府网站查询限行尾号</a>。</p></noscript>
+    </section>
+
+    <div class="tools">
+      <section class="panel booking" aria-labelledby="booking-title">
+        <h2 id="booking-title">公车预约</h2>
+        <p>通过「机关服务平台」办理</p>
+        <button class="primary" id="booking-button" type="button" aria-controls="booking-help" aria-expanded="false" disabled>进入公车预约</button>
+        <div id="booking-help" class="help" role="status" hidden></div>
+      </section>
+
+      <section class="panel query" aria-labelledby="query-title">
+        <h2 id="query-title">查询其他日期</h2>
+        <form id="date-form">
+          <label for="query-date">选择预约用车日期</label>
+          <div class="query-controls">
+            <input type="date" id="query-date" name="date" required disabled>
+            <button class="secondary" type="submit" id="query-button" disabled>查询</button>
+          </div>
+        </form>
+        <div id="query-result" class="query-result" aria-live="polite" hidden></div>
+      </section>
+    </div>
+
+    <section class="vehicle-note" aria-labelledby="note-title">
+      <h2 id="note-title">公务用车停驶规定</h2>
+      <p>通告所列机关、事业单位及国企等公务用车，按尾号每周停驶一天（00:00–24:00），适用北京市行政区域内道路。请在预约前向单位核实车辆类别及节假日停驶安排。</p>
+    </section>
+
+    <footer>
+      <div id="coverage">限行数据以北京交管公告为准</div>
+      <div class="source-links">
+        <a id="policy-link" href="https://www.beijing.gov.cn/zhengce/gfxwj/202603/t20260323_4564097.html" target="_blank" rel="noopener">限行政策</a>
+        <a href="https://jtgl.beijing.gov.cn/jgj/jgxx/gsgg/jttg/bjsgajgajtgljtg/" target="_blank" rel="noopener">北京交管公告</a>
+      </div>
+    </footer>
+  </main>
+
+  <template id="day-template">
+    <article class="day-card">
+      <div class="day-heading"><h2 class="relative-date"></h2><time></time></div>
+      <div class="restriction"><span class="restriction-label"></span><div class="restriction-value"></div></div>
+      <a class="day-detail" target="_blank" rel="noopener"></a>
+    </article>
+  </template>
+</body>
+</html>

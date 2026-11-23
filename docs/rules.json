@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "updated": "2026-11-23",
+  "policies": [
+    {
+      "source": "https://www.beijing.gov.cn/zhengce/gfxwj/202603/t20260323_4564097.html",
+      "rotations": [
+        { "from": "2026-03-30", "until": "2026-06-28", "weekdays": ["27", "38", "49", "50", "16"] },
+        { "from": "2026-06-29", "until": "2026-09-27", "weekdays": ["16", "27", "38", "49", "50"] },
+        { "from": "2026-09-28", "until": "2026-12-27", "weekdays": ["50", "16", "27", "38", "49"] },
+        { "from": "2026-12-28", "until": "2027-03-28", "weekdays": ["49", "50", "16", "27", "38"] }
+      ]
+    }
+  ],
+  "calendars": {
+    "2026": {
+      "source": "https://www.beijing.gov.cn/cs/gncs/zcwj/202603/t20260327_4568275.html",
+      "holidays": [
+        { "name": "元旦", "from": "2026-01-01", "until": "2026-01-03" },
+        { "name": "春节", "from": "2026-02-15", "until": "2026-02-23" },
+        { "name": "清明节", "from": "2026-04-04", "until": "2026-04-06" },
+        { "name": "劳动节", "from": "2026-05-01", "until": "2026-05-05" },
+        { "name": "端午节", "from": "2026-06-19", "until": "2026-06-21" },
+        { "name": "中秋节", "from": "2026-09-25", "until": "2026-09-27" },
+        { "name": "国庆节", "from": "2026-10-01", "until": "2026-10-07" }
+      ],
+      "makeupDays": ["2026-01-04", "2026-02-14", "2026-02-28", "2026-05-09", "2026-09-20", "2026-10-10"]
+    },
+    "2027": {
+      "source": "https://www.beijing.gov.cn/fuwu/bmfw/sy/jrts/202611/t20261105_4934226.html",
+      "holidays": [
+        { "name": "元旦", "from": "2027-01-01", "until": "2027-01-03" },
+        { "name": "春节", "from": "2027-02-05", "until": "2027-02-13" },
+        { "name": "清明节", "from": "2027-04-03", "until": "2027-04-05" },
+        { "name": "劳动节", "from": "2027-05-01", "until": "2027-05-05" },
+        { "name": "端午节", "from": "2027-06-09", "until": "2027-06-09" },
+        { "name": "中秋节", "from": "2027-09-15", "until": "2027-09-15" },
+        { "name": "国庆节", "from": "2027-10-01", "until": "2027-10-07" }
+      ],
+      "makeupDays": ["2027-01-31", "2027-02-14", "2027-05-08", "2027-09-26", "2027-10-09"]
+    }
+  },
+  "exemptions": [
+    { "from": "2026-04-04", "until": "2026-04-06", "source": "https://jtgl.beijing.gov.cn/jgj/jgxx/gsgg/jttg/bjsgajgajtgljtg/743962574/index.html" },
+    { "from": "2026-05-01", "until": "2026-05-05", "source": "https://jtgl.beijing.gov.cn/jgj/jgxx/gsgg/jttg/bjsgajgajtgljtg/743962574/index.html" },
+    { "from": "2026-05-09", "until": "2026-05-09", "source": "https://jtgl.beijing.gov.cn/jgj/jgxx/gsgg/jttg/bjsgajgajtgljtg/743962574/index.html" },
+    { "from": "2026-06-19", "until": "2026-06-21", "source": "https://www.beijing.gov.cn/fuwu/bmfw/sy/jrts/202606/t20260618_4706848.html" },
+    { "from": "2026-09-20", "until": "2026-09-20", "source": "https://jtgl.beijing.gov.cn/jgj/jgxx/94246/95332/744126788/index.html" },
+    { "from": "2026-09-25", "until": "2026-09-27", "source": "https://jtgl.beijing.gov.cn/jgj/jgxx/94246/95332/744126788/index.html" },
+    { "from": "2026-10-01", "until": "2026-10-07", "source": "https://jtgl.beijing.gov.cn/jgj/jgxx/94246/95332/744126788/index.html" },
+    { "from": "2026-10-10", "until": "2026-10-10", "source": "https://jtgl.beijing.gov.cn/jgj/jgxx/94246/95332/744126788/index.html" }
+  ]
+}
