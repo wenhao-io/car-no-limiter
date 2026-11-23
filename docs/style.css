@@ -60,11 +60,12 @@ button:disabled { cursor: default; opacity: .55; }
 [data-state='free'] .vehicle-indicator { background: #cdecd7; }
 [data-state='free'] .vehicle-indicator::before { content: '✓'; }
 .vehicle-reminder[data-state='limited'] {
+  min-height: 7.25rem;
   background-color: #bf102e;
   color: #fff;
   border-color: #ad0824;
   box-shadow: 0 0 0 2px #e92b4a55, 0 5px 16px #c7143a55;
-  animation: vehicle-red-pulse .95s ease-in-out 5;
+  animation: vehicle-red-pulse .95s ease-in-out infinite;
 }
 [data-state='limited'] .vehicle-status { font-size: 1.15rem; letter-spacing: .06em; }
 [data-state='limited'] .vehicle-indicator { background: #fff0f2; color: #991428; }
@@ -131,6 +132,7 @@ footer { margin-top: .95rem; padding-top: .85rem; border-top: 1px solid #cad8df;
   .topbar { padding: .72rem 0; }
   .content { margin-top: .85rem; }
   .vehicle-reminder { gap: .55rem; padding: .6rem .65rem; margin-bottom: .65rem; }
+  .vehicle-reminder[data-state='limited'] { min-height: 6.75rem; }
   .three-days { gap: .38rem; }
   .day-card { padding: .66rem .47rem; border-radius: .7rem; min-height: 10.75rem; }
   .day-heading { display: grid; }
