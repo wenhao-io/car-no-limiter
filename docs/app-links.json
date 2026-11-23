@@ -1,5 +1,11 @@
 {
-  "ios": null,
-  "android": null,
-  "harmony": null
+  "ios": {
+    "entry": null,
+    "store": "https://apps.apple.com/cn/app/机关服务平台/id1523594749"
+  },
+  "android": {
+    "entry": null,
+    "store": "https://sj.qq.com/appdetail/com.hollysmart.smart_beijinggovernmentaffairsplatform"
+  },
+  "harmony": { "entry": null, "store": null }
 }

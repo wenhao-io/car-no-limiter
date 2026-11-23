@@ -2,9 +2,6 @@ import { addDays, beijingToday, coverageEnd, dateLabel, isDate, restrictionFor, 
 
 const get = id => document.getElementById(id);
 const rulesKey = `beijing-traffic-rules:${new URL('./', import.meta.url).pathname}`;
-const shortcutKey = 'car-no-limiter:ios-booking-shortcut';
-const shortcutName = '打开机关服务平台';
-const shortcutUrl = `shortcuts://run-shortcut?name=${encodeURIComponent(shortcutName)}`;
 const relative = ['今天', '明天', '后天'];
 const coverage = get('coverage');
 const dayCards = get('three-days');
@@ -23,7 +20,7 @@ let today = beijingToday();
 let submittedDate = '';
 let offline = false;
 let loading = false;
-let launchLink;
+let bookingLinks = {};
 let installPrompt;
 
 function readSavedRules() {
@@ -155,24 +152,24 @@ async function refreshRules() {
 function getPlatform() {
   const agent = navigator.userAgent;
   if (/iPad|iPhone|iPod/i.test(agent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) return 'ios';
-  if (/HarmonyOS|OpenHarmony|HuaweiBrowser/i.test(agent)) return 'harmony';
+  if (/HarmonyOS|OpenHarmony/i.test(agent)) return 'harmony';
   if (/Android/i.test(agent)) return 'android';
   return 'other';
 }
 
 const platform = getPlatform();
-let shortcutEnabled = false;
-if (platform === 'ios') {
-  try { shortcutEnabled = localStorage.getItem(shortcutKey) === 'enabled'; } catch { /* Storage may be disabled. */ }
-}
+const usesHuaweiBrowser = /HuaweiBrowser/i.test(navigator.userAgent);
 
-function getLaunchLink(value) {
+function getBookingUrl(value, allowAndroidIntent = false) {
   if (typeof value !== 'string') return;
   try {
     const url = new URL(value);
-    const blocked = ['http:', 'javascript:', 'data:', 'file:', 'blob:', 'mailto:', 'tel:', 'sms:', 'itms-services:'];
-    if (blocked.includes(url.protocol) || url.username || url.password) return;
-    return url.href;
+    if (url.username || url.password) return;
+    if (url.protocol === 'https:') return url.href;
+    if (allowAndroidIntent && url.protocol === 'intent:' && /^#Intent;.+;end$/.test(url.hash)) {
+      const fallback = url.hash.match(/;S\.browser_fallback_url=([^;]+);/);
+      if (fallback && getBookingUrl(decodeURIComponent(fallback[1]))) return url.href;
+    }
   } catch {
     return;
   }
@@ -180,45 +177,38 @@ function getLaunchLink(value) {
 
 function showBookingHelp() {
   const description = document.createElement('p');
-  description.textContent = {
-    ios: '若预约 App 未打开，请从主屏幕打开「机关服务平台」并进入用车预约。',
-    android: '若预约 App 未打开，请在手机桌面或应用列表打开「机关服务平台」，随后进入用车预约。',
-    harmony: '若预约 App 未打开，请在手机桌面打开「机关服务平台」，随后进入用车预约。',
-    other: '请在手机上打开已安装的「机关服务平台」，随后进入用车预约。'
-  }[platform];
+  if (platform === 'ios' && !isInstalled() && !bookingLinks.entry) {
+    description.textContent = '用 Safari 打开本页，点页面顶部的「打开」或「查看」。';
+  } else {
+    description.textContent = '已安装时，可从手机桌面打开「机关服务平台」并办理预约。';
+  }
   description.setAttribute('role', 'status');
   bookingHelp.replaceChildren(description);
-  if (platform === 'ios' && !launchLink) bookingHelp.append(...buildShortcutSetup());
+  if (bookingLinks.store) {
+    const store = document.createElement('a');
+    store.href = bookingLinks.store;
+    store.textContent = platform === 'ios' ? '尚未安装？前往 App Store' : '尚未安装？前往应用商店';
+    bookingHelp.append(store);
+  } else if (platform === 'android' || platform === 'harmony') {
+    const installation = document.createElement('p');
+    installation.textContent = '尚未安装时，请使用本单位提供的安装入口。';
+    bookingHelp.append(installation);
+  }
   bookingHelp.hidden = false;
   bookingButton.setAttribute('aria-expanded', 'true');
 }
 
-function buildShortcutSetup() {
-  const instructions = document.createElement('p');
-  instructions.textContent = `设置一次即可跳转。在「快捷指令」App 新建「${shortcutName}」，添加「打开 App」操作，选择「机关服务平台」，保存后回到这里。`;
-  const toggle = document.createElement('button');
-  toggle.type = 'button';
-  toggle.className = 'secondary';
-  const updateLabel = () => {
-    toggle.textContent = shortcutEnabled ? '关闭快捷指令跳转' : '已创建，启用并打开';
-  };
-  updateLabel();
-  toggle.addEventListener('click', () => {
-    shortcutEnabled = !shortcutEnabled;
-    try { localStorage.setItem(shortcutKey, shortcutEnabled ? 'enabled' : 'disabled'); } catch { /* Keep the setting for this session. */ }
-    updateLabel();
-    if (shortcutEnabled) window.location.assign(shortcutUrl);
-  });
-  return [instructions, toggle];
-}
-
 bookingButton.addEventListener('click', () => {
   showBookingHelp();
-  const destination = launchLink || (shortcutEnabled ? shortcutUrl : undefined);
-  if (destination) window.location.assign(destination);
+  if (bookingLinks.entry) window.location.assign(bookingLinks.entry);
 });
-bookingButton.disabled = false;
-fetchJson('./app-links.json').then(links => { launchLink = getLaunchLink(links?.[platform]); }).catch(() => {});
+fetchJson('./app-links.json?v=5').then(links => {
+  const config = links?.[platform];
+  bookingLinks = {
+    entry: getBookingUrl(config?.entry, platform === 'android'),
+    store: getBookingUrl(config?.store)
+  };
+}).catch(() => {}).finally(() => { bookingButton.disabled = false; });
 
 function isInstalled() {
   return navigator.standalone || matchMedia('(display-mode: standalone)').matches;
@@ -227,8 +217,8 @@ function isInstalled() {
 function showInstallHelp() {
   const instructions = {
     ios: '在 Safari 打开本页，点「分享」→「添加到主屏幕」。',
-    android: '在 Chrome 打开本页，从浏览器菜单选择「安装应用」或「添加到主屏幕」。',
-    harmony: '在系统浏览器打开本页，从菜单选择「添加到桌面」。选项名称因浏览器版本而异。',
+    android: usesHuaweiBrowser ? '在华为浏览器打开本页，点菜单「∷」→「添加至桌面」。' : '在 Chrome 打开本页，点菜单「⋮」→「安装」或「添加到主屏幕」。',
+    harmony: '在华为浏览器打开本页，点菜单「∷」→「添加至桌面」。',
     other: '在手机浏览器打开本页，从分享或浏览器菜单选择「添加到主屏幕」或「安装」。'
   };
   installHelp.textContent = instructions[platform];
