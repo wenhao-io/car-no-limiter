@@ -29,18 +29,15 @@ button:disabled { cursor: default; opacity: .55; }
   background: radial-gradient(ellipse at 92% 10%, #164456 0, transparent 62%), var(--navy);
   color: var(--paper);
   padding-top: env(safe-area-inset-top);
-  padding-bottom: 4.1rem;
 }
-.topbar { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: 1.05rem 0; border-bottom: 1px solid #ffffff28; }
+.masthead .shell { display: flow-root; }
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .95rem 0; }
 .brand { display: flex; gap: .55rem; align-items: center; font-size: .94rem; font-weight: 650; letter-spacing: .025em; }
 .brand img { border-radius: 9px; }
 .install { min-height: 2.65rem; padding: .35rem .78rem; border-radius: .55rem; color: #f4fcfc; border: 1px solid #a4c5ce77; background: #ffffff12; font-size: .875rem; white-space: nowrap; }
 .install:hover { background: #ffffff25; }
-.install-help { margin-top: .75rem; border: 1px solid #a4c5ce77; border-radius: .75rem; padding: .75rem 1rem; font-size: .94rem; line-height: 1.6; }
-.intro { padding-top: 1.9rem; }
-h1 { font-weight: 750; font-size: clamp(2rem, 6vw, 3.3rem); letter-spacing: .025em; line-height: 1.2; }
-.intro p { margin-top: .58rem; color: #c4dce4; font-size: .95rem; }
-.content { margin-top: -2.7rem; padding-bottom: max(1.8rem, env(safe-area-inset-bottom)); }
+.install-help { margin-bottom: .85rem; border: 1px solid #a4c5ce77; border-radius: .75rem; padding: .75rem 1rem; font-size: .94rem; line-height: 1.6; }
+.content { margin-top: 1rem; padding-bottom: max(1.8rem, env(safe-area-inset-bottom)); }
 
 .vehicle-reminder {
   display: grid;
@@ -63,19 +60,27 @@ h1 { font-weight: 750; font-size: clamp(2rem, 6vw, 3.3rem); letter-spacing: .025
 [data-state='free'] .vehicle-indicator { background: #cdecd7; }
 [data-state='free'] .vehicle-indicator::before { content: '✓'; }
 .vehicle-reminder[data-state='limited'] {
-  background: linear-gradient(110deg, #7a111d, #b2172b 70%, #921225);
+  background-color: #bf102e;
   color: #fff;
-  border: 2px solid #ff6b78;
-  box-shadow: 0 0 0 2px #fc627c55, 0 5px 18px #c7143a44;
-  animation: vehicle-red-pulse 1.2s ease-in-out 4;
+  border-color: #ad0824;
+  box-shadow: 0 0 0 2px #e92b4a55, 0 5px 16px #c7143a55;
+  animation: vehicle-red-pulse .95s ease-in-out 5;
 }
 [data-state='limited'] .vehicle-status { font-size: 1.15rem; letter-spacing: .06em; }
 [data-state='limited'] .vehicle-indicator { background: #fff0f2; color: #991428; }
 [data-state='limited'] .vehicle-indicator::before { content: '!'; }
 
 @keyframes vehicle-red-pulse {
-  0%, 100% { box-shadow: 0 0 0 2px #fc627c55, 0 5px 18px #c7143a44; }
-  50% { box-shadow: 0 0 0 5px #ff697daa, 0 0 28px 4px #ff385ca8, inset 0 0 24px 5px #ff728b70; }
+  0%, 100% {
+    background-color: #bf102e;
+    border-color: #ad0824;
+    box-shadow: 0 0 0 2px #e92b4a55, 0 5px 16px #c7143a55;
+  }
+  50% {
+    background-color: #e0183d;
+    border-color: #ff5271;
+    box-shadow: 0 0 0 5px #ff426dc4, 0 0 28px 5px #ff204db0;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .vehicle-reminder[data-state='limited'] { animation: none; }
@@ -124,9 +129,7 @@ footer { margin-top: .95rem; padding-top: .85rem; border-top: 1px solid #cad8df;
 @media (max-width: 44rem) {
   .shell { width: calc(100% - 2rem); }
   .topbar { padding: .72rem 0; }
-  .masthead { padding-bottom: 3.45rem; }
-  .intro { padding-top: 1.18rem; }
-  .content { margin-top: -2.15rem; }
+  .content { margin-top: .85rem; }
   .vehicle-reminder { gap: .55rem; padding: .6rem .65rem; margin-bottom: .65rem; }
   .three-days { gap: .38rem; }
   .day-card { padding: .66rem .47rem; border-radius: .7rem; min-height: 10.75rem; }
