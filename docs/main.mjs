@@ -175,7 +175,7 @@ function getLaunchLink(value) {
 function showBookingHelp() {
   const description = document.createElement('p');
   description.textContent = {
-    ios: '如果 Safari 顶部显示「打开」，可点击进入「机关服务平台」。也可从主屏幕或 App Store 打开，随后进入用车预约。',
+    ios: '在 App Store 页面点「打开」进入「机关服务平台」。也可从手机主屏幕打开并进入用车预约。',
     android: '若预约 App 未打开，请在手机桌面或应用列表打开「机关服务平台」，随后进入用车预约。',
     harmony: '若预约 App 未打开，请在手机桌面打开「机关服务平台」，随后进入用车预约。',
     other: '请在手机上打开已安装的「机关服务平台」，随后进入用车预约。'
@@ -195,7 +195,8 @@ function showBookingHelp() {
 
 bookingButton.addEventListener('click', () => {
   showBookingHelp();
-  if (launchLink) window.location.assign(launchLink);
+  const destination = launchLink || (platform === 'ios' ? appStore : undefined);
+  if (destination) window.location.assign(destination);
 });
 bookingButton.disabled = false;
 fetchJson('./app-links.json').then(links => { launchLink = getLaunchLink(links?.[platform]); }).catch(() => {});
