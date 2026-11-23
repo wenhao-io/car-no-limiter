@@ -2,7 +2,9 @@ import { addDays, beijingToday, coverageEnd, dateLabel, isDate, restrictionFor, 
 
 const get = id => document.getElementById(id);
 const rulesKey = `beijing-traffic-rules:${new URL('./', import.meta.url).pathname}`;
-const appStore = 'https://apps.apple.com/cn/app/机关服务平台/id1523594749';
+const shortcutKey = 'car-no-limiter:ios-booking-shortcut';
+const shortcutName = '打开机关服务平台';
+const shortcutUrl = `shortcuts://run-shortcut?name=${encodeURIComponent(shortcutName)}`;
 const relative = ['今天', '明天', '后天'];
 const coverage = get('coverage');
 const dayCards = get('three-days');
@@ -159,6 +161,10 @@ function getPlatform() {
 }
 
 const platform = getPlatform();
+let shortcutEnabled = false;
+if (platform === 'ios') {
+  try { shortcutEnabled = localStorage.getItem(shortcutKey) === 'enabled'; } catch { /* Storage may be disabled. */ }
+}
 
 function getLaunchLink(value) {
   if (typeof value !== 'string') return;
@@ -175,27 +181,40 @@ function getLaunchLink(value) {
 function showBookingHelp() {
   const description = document.createElement('p');
   description.textContent = {
-    ios: '在 App Store 页面点「打开」进入「机关服务平台」。也可从手机主屏幕打开并进入用车预约。',
+    ios: '若预约 App 未打开，请从主屏幕打开「机关服务平台」并进入用车预约。',
     android: '若预约 App 未打开，请在手机桌面或应用列表打开「机关服务平台」，随后进入用车预约。',
     harmony: '若预约 App 未打开，请在手机桌面打开「机关服务平台」，随后进入用车预约。',
     other: '请在手机上打开已安装的「机关服务平台」，随后进入用车预约。'
   }[platform];
+  description.setAttribute('role', 'status');
   bookingHelp.replaceChildren(description);
-  if (platform === 'ios' || platform === 'other') {
-    const link = document.createElement('a');
-    link.href = appStore;
-    link.target = '_blank';
-    link.rel = 'noopener';
-    link.textContent = '查看 iOS App Store 页面';
-    bookingHelp.append(link);
-  }
+  if (platform === 'ios' && !launchLink) bookingHelp.append(...buildShortcutSetup());
   bookingHelp.hidden = false;
   bookingButton.setAttribute('aria-expanded', 'true');
 }
 
+function buildShortcutSetup() {
+  const instructions = document.createElement('p');
+  instructions.textContent = `设置一次即可跳转。在「快捷指令」App 新建「${shortcutName}」，添加「打开 App」操作，选择「机关服务平台」，保存后回到这里。`;
+  const toggle = document.createElement('button');
+  toggle.type = 'button';
+  toggle.className = 'secondary';
+  const updateLabel = () => {
+    toggle.textContent = shortcutEnabled ? '关闭快捷指令跳转' : '已创建，启用并打开';
+  };
+  updateLabel();
+  toggle.addEventListener('click', () => {
+    shortcutEnabled = !shortcutEnabled;
+    try { localStorage.setItem(shortcutKey, shortcutEnabled ? 'enabled' : 'disabled'); } catch { /* Keep the setting for this session. */ }
+    updateLabel();
+    if (shortcutEnabled) window.location.assign(shortcutUrl);
+  });
+  return [instructions, toggle];
+}
+
 bookingButton.addEventListener('click', () => {
   showBookingHelp();
-  const destination = launchLink || (platform === 'ios' ? appStore : undefined);
+  const destination = launchLink || (shortcutEnabled ? shortcutUrl : undefined);
   if (destination) window.location.assign(destination);
 });
 bookingButton.disabled = false;
