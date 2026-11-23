@@ -42,6 +42,45 @@ h1 { font-weight: 750; font-size: clamp(2rem, 6vw, 3.3rem); letter-spacing: .025
 .intro p { margin-top: .58rem; color: #c4dce4; font-size: .95rem; }
 .content { margin-top: -2.7rem; padding-bottom: max(1.8rem, env(safe-area-inset-bottom)); }
 
+.vehicle-reminder {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: .8rem;
+  padding: .72rem 1rem;
+  margin-bottom: .85rem;
+  border: 1px solid #d6b77b;
+  border-radius: .85rem;
+  background: #fff6e1;
+  color: #623e08;
+}
+.vehicle-reminder h2 { font-size: 1.05rem; font-weight: 750; }
+.vehicle-reminder h2 span { font: 800 1.35rem/1 system-ui, sans-serif; letter-spacing: .06em; }
+.vehicle-status { font-size: .95rem; font-weight: 750; line-height: 1.25; text-align: end; }
+.vehicle-indicator { display: grid; place-items: center; width: 2.05rem; height: 2.05rem; border-radius: 50%; background: #f1dfb6; font: 800 1.15rem/1 system-ui, sans-serif; }
+.vehicle-indicator::before { content: '–'; }
+.vehicle-reminder[data-state='free'] { color: #075838; background: #e9f8ed; border-color: #9bc9ad; }
+[data-state='free'] .vehicle-indicator { background: #cdecd7; }
+[data-state='free'] .vehicle-indicator::before { content: '✓'; }
+.vehicle-reminder[data-state='limited'] {
+  background: linear-gradient(110deg, #7a111d, #b2172b 70%, #921225);
+  color: #fff;
+  border: 2px solid #ff6b78;
+  box-shadow: 0 0 0 2px #fc627c55, 0 5px 18px #c7143a44;
+  animation: vehicle-red-pulse 1.2s ease-in-out 4;
+}
+[data-state='limited'] .vehicle-status { font-size: 1.15rem; letter-spacing: .06em; }
+[data-state='limited'] .vehicle-indicator { background: #fff0f2; color: #991428; }
+[data-state='limited'] .vehicle-indicator::before { content: '!'; }
+
+@keyframes vehicle-red-pulse {
+  0%, 100% { box-shadow: 0 0 0 2px #fc627c55, 0 5px 18px #c7143a44; }
+  50% { box-shadow: 0 0 0 5px #ff697daa, 0 0 28px 4px #ff385ca8, inset 0 0 24px 5px #ff728b70; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vehicle-reminder[data-state='limited'] { animation: none; }
+}
+
 .three-days { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; gap: .85rem; }
 .day-card, .panel, .loading { background: var(--paper); border: 1px solid var(--line); border-radius: 1rem; box-shadow: 0 6px 18px #13384a0a; }
 .day-card { position: relative; overflow: hidden; padding: 1.12rem; min-height: 11.4rem; display: flex; flex-direction: column; }
@@ -86,6 +125,7 @@ footer { margin-top: .95rem; padding-top: .85rem; border-top: 1px solid #cad8df;
   .masthead { padding-bottom: 3.45rem; }
   .intro { padding-top: 1.18rem; }
   .content { margin-top: -2.15rem; }
+  .vehicle-reminder { gap: .55rem; padding: .6rem .65rem; margin-bottom: .65rem; }
   .three-days { gap: .38rem; }
   .day-card { padding: .66rem .47rem; border-radius: .7rem; min-height: 10.75rem; }
   .day-heading { display: grid; }

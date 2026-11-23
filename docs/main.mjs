@@ -6,6 +6,9 @@ const appStore = 'https://apps.apple.com/cn/app/机关服务平台/id1523594749'
 const relative = ['今天', '明天', '后天'];
 const coverage = get('coverage');
 const dayCards = get('three-days');
+const vehicleReminder = get('vehicle-reminder');
+const vehicleTail = get('vehicle-plate')?.textContent.trim().slice(-1);
+const vehicleStatus = get('vehicle-status');
 const dateInput = get('query-date');
 const queryResult = get('query-result');
 const notice = get('data-alert');
@@ -94,12 +97,26 @@ function renderQuery() {
   queryResult.append(caption, summary, detail);
 }
 
+function renderVehicleReminder() {
+  if (!vehicleReminder) return;
+  const item = restrictionFor(today, latestRules);
+  if (item.kind === 'unknown' || item.kind === 'projected') {
+    vehicleReminder.dataset.state = 'pending';
+    vehicleStatus.textContent = '今日限行待确认';
+    return;
+  }
+  const limited = item.digits?.includes(vehicleTail);
+  vehicleReminder.dataset.state = limited ? 'limited' : 'free';
+  vehicleStatus.textContent = limited ? '今日限行' : '今日不限行';
+}
+
 function render() {
   today = beijingToday();
   dateInput.min = today;
   dateInput.max = '9999-12-31';
   if (dateInput.value < today) dateInput.value = today;
   if (submittedDate < today) submittedDate = '';
+  renderVehicleReminder();
   dayCards.replaceChildren(...relative.map((_, index) => buildCard(addDays(today, index), index)));
   renderQuery();
 

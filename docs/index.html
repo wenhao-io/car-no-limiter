@@ -12,8 +12,8 @@
   <link rel="icon" href="./icons/icon-192.png">
   <link rel="apple-touch-icon" href="./icons/icon-192.png">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./style.css">
-  <script type="module" src="./main.mjs"></script>
+  <link rel="stylesheet" href="./style.css?v=2">
+  <script type="module" src="./main.mjs?v=2"></script>
 </head>
 <body>
   <header class="masthead">
@@ -33,6 +33,11 @@
   <main class="shell content">
     <section class="section days" aria-label="近三日限行">
       <div id="data-alert" class="data-alert" role="status" hidden></div>
+      <div id="vehicle-reminder" class="vehicle-reminder" data-state="pending">
+        <span class="vehicle-indicator" aria-hidden="true"></span>
+        <h2>车辆 <span id="vehicle-plate">1980</span></h2>
+        <p id="vehicle-status" class="vehicle-status" role="status">正在核对今日限行…</p>
+      </div>
       <div id="three-days" class="three-days" aria-live="polite"><p class="loading">正在读取限行数据…</p></div>
       <noscript><p class="data-alert">请启用 JavaScript，或前往<a href="https://www.beijing.gov.cn/fuwu/bmfw/bmzt/whts/xxwh/">北京市政府网站查询限行尾号</a>。</p></noscript>
     </section>
