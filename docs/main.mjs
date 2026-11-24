@@ -160,19 +160,27 @@ function getPlatform() {
 const platform = getPlatform();
 const usesHuaweiBrowser = /HuaweiBrowser/i.test(navigator.userAgent);
 
-function getBookingUrl(value, allowAndroidIntent = false) {
+function getBookingUrl(value, appProtocol) {
   if (typeof value !== 'string') return;
   try {
     const url = new URL(value);
     if (url.username || url.password) return;
     if (url.protocol === 'https:') return url.href;
-    if (allowAndroidIntent && url.protocol === 'intent:' && /^#Intent;.+;end$/.test(url.hash)) {
+    if (appProtocol === 'jgj:' && url.protocol === appProtocol && url.hostname === 'jgjapp') return url.href;
+    if (appProtocol === 'intent:' && url.protocol === appProtocol && /^#Intent;.+;end$/.test(url.hash)) {
       const fallback = url.hash.match(/;S\.browser_fallback_url=([^;]+);/);
       if (fallback && getBookingUrl(decodeURIComponent(fallback[1]))) return url.href;
     }
   } catch {
     return;
   }
+}
+
+function getBookingEntry(config) {
+  if (platform !== 'android') return getBookingUrl(config?.entry);
+  const isChrome = navigator.userAgentData?.brands?.some(({ brand }) => brand === 'Google Chrome');
+  const intent = isChrome ? getBookingUrl(config?.entry, 'intent:') : undefined;
+  return intent ?? getBookingUrl(config?.direct, 'jgj:') ?? getBookingUrl(config?.entry);
 }
 
 function showBookingHelp() {
@@ -198,17 +206,20 @@ function showBookingHelp() {
   bookingButton.setAttribute('aria-expanded', 'true');
 }
 
-bookingButton.addEventListener('click', () => {
+bookingButton.addEventListener('click', event => {
+  if (!bookingLinks.entry) event.preventDefault();
   showBookingHelp();
-  if (bookingLinks.entry) window.location.assign(bookingLinks.entry);
 });
-fetchJson('./app-links.json?v=8').then(links => {
+fetchJson('./app-links.json?v=9').then(links => {
   const config = links?.[platform];
   bookingLinks = {
-    entry: getBookingUrl(config?.entry, platform === 'android'),
+    entry: getBookingEntry(config),
     store: getBookingUrl(config?.store)
   };
-}).catch(() => {}).finally(() => { bookingButton.disabled = false; });
+}).catch(() => {}).finally(() => {
+  bookingButton.href = bookingLinks.entry ?? '#booking-help';
+  bookingButton.removeAttribute('aria-disabled');
+});
 
 function isInstalled() {
   return navigator.standalone || matchMedia('(display-mode: standalone)').matches;
@@ -217,7 +228,7 @@ function isInstalled() {
 function showInstallHelp() {
   const instructions = {
     ios: '在 Safari 打开本页，点「分享」→「添加到主屏幕」。',
-    android: usesHuaweiBrowser ? '在华为浏览器打开本页，点菜单「∷」→「添加至桌面」。' : '在 Chrome 打开本页，点菜单「⋮」→「安装」或「添加到主屏幕」。',
+    android: usesHuaweiBrowser ? '在华为浏览器点菜单「∷」→「添加至桌面」。' : '点手机浏览器的菜单，选择「添加到主屏幕」「添加至桌面」或「安装」。',
     harmony: '在华为浏览器打开本页，点菜单「∷」→「添加至桌面」。',
     other: '在手机浏览器打开本页，从分享或浏览器菜单选择「添加到主屏幕」或「安装」。'
   };

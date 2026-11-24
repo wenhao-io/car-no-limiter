@@ -112,7 +112,8 @@ button:disabled { cursor: default; opacity: .55; }
 .query-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .55rem; }
 input[type='date'], .secondary, .primary { min-height: 2.9rem; padding: .5rem .75rem; border-radius: .55rem; }
 input[type='date'] { display: block; width: 100%; min-width: 0; border: 1px solid #aebfc6; background: #fcfefe; color: var(--ink); }
-.primary { width: 100%; color: #fff; background: var(--teal); border: 1px solid var(--teal); font-weight: 650; }
+.primary { display: grid; place-items: center; width: 100%; color: #fff; background: var(--teal); border: 1px solid var(--teal); font-weight: 650; text-decoration: none; }
+.primary[aria-disabled='true'] { opacity: .55; }
 .primary:hover { background: #05584f; }
 .secondary { color: #075c54; background: #ebf7f4; border: 1px solid #a4c9c1; font-weight: 650; }
 .secondary:hover { background: #dbf1ec; }

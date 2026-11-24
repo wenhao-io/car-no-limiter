@@ -6,7 +6,7 @@
 
 运行 `python3 -m http.server 8000 --directory docs`，访问 `http://localhost:8000/`。在 GitHub 仓库 **Settings → Pages** 选择 **Deploy from a branch**，发布目录设为 **main → /docs**。部署后使用 HTTPS 地址访问，支持添加到手机主屏幕。曾在线成功打开的设备可以使用缓存，但网页会标出更新失败。
 
-Android 可在 Chrome 菜单中安装为网页应用。鸿蒙可在华为浏览器选择「添加至桌面」创建网页入口，打开方式由浏览器决定。
+Android 可在支持该功能的浏览器菜单中安装网页应用或添加至桌面。鸿蒙可在华为浏览器选择「添加至桌面」创建网页入口。
 
 ## 维护限行数据
 
@@ -22,7 +22,7 @@ Android 可在 Chrome 菜单中安装为网页应用。鸿蒙可在华为浏览�
 
 `docs/app-links.json` 按平台配置 `entry` 和 `store`。`entry` 填平台方确认的浏览器入口，入口应能在 App 已安装时打开 App，并在未安装时引导至指定商店。Android Chrome 也接受带 `browser_fallback_url` 的 `intent:` 入口。`store` 填官方应用商店详情页，作为用户可主动选择的备用链接。
 
-Android 版 3.6.6 的 APK 声明了浏览器入口 `jgj://jgjapp`。预约按钮使用指向该应用包的 Android Intent，无法解析时由 Chrome 转到腾讯应用宝详情页。入口对应应用启动，具体落地页待真机确认。
+Android 版 3.6.6 的 APK 声明了浏览器入口 `jgj://jgjapp`。当浏览器标识为 Google Chrome 时，按钮优先使用带应用宝回退地址的 Android Intent。其他 Android 浏览器直接访问 `direct` 的唤起链接，用户也能从按钮旁的提示打开应用商店。是否允许唤起由浏览器决定，具体落地页待真机确认。
 
 iOS Safari 的顶部系统横幅可处理已安装和未安装两种情况。预约按钮在 `entry` 缺失时展示备用说明。在各平台浏览器和桌面图标的打开场景下，应分别验证已安装和未安装两种情况。
 
