@@ -202,7 +202,7 @@ bookingButton.addEventListener('click', () => {
   showBookingHelp();
   if (bookingLinks.entry) window.location.assign(bookingLinks.entry);
 });
-fetchJson('./app-links.json?v=5').then(links => {
+fetchJson('./app-links.json?v=8').then(links => {
   const config = links?.[platform];
   bookingLinks = {
     entry: getBookingUrl(config?.entry, platform === 'android'),
