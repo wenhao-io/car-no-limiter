@@ -1,4 +1,4 @@
-import { addDays, beijingToday, coverageEnd, dateLabel, isDate, restrictionFor, validateRules } from './calendar.mjs';
+import { addDays, beijingToday, coverageEnd, dateLabel, isDate, restrictionFor, validateRules } from './calendar.mjs?v=10';
 
 const get = id => document.getElementById(id);
 const rulesKey = `beijing-traffic-rules:${new URL('./', import.meta.url).pathname}`;
@@ -73,8 +73,11 @@ function buildCard(date, position) {
     value.textContent = item.label;
   }
   const detail = card.querySelector('.day-detail');
-  detail.textContent = item.detail;
-  detail.href = item.source;
+  detail.hidden = !item.detail;
+  if (item.detail) {
+    detail.textContent = item.detail;
+    detail.href = item.source;
+  }
   return card;
 }
 
@@ -88,12 +91,14 @@ function renderQuery() {
   caption.textContent = `${dateLabel(submittedDate, true)} ${item.weekday}`;
   const summary = document.createElement('div');
   summary.textContent = item.digits ? `${item.label} ${item.digits.join('、')}` : item.label;
+  queryResult.append(caption, summary);
+  if (!item.detail) return;
   const detail = document.createElement('a');
   detail.href = item.source;
   detail.target = '_blank';
   detail.rel = 'noopener';
   detail.textContent = item.detail;
-  queryResult.append(caption, summary, detail);
+  queryResult.append(detail);
 }
 
 function renderVehicleReminder() {
@@ -152,8 +157,9 @@ async function refreshRules() {
 function getPlatform() {
   const agent = navigator.userAgent;
   if (/iPad|iPhone|iPod/i.test(agent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) return 'ios';
-  if (/HarmonyOS|OpenHarmony/i.test(agent)) return 'harmony';
+  if (/HarmonyOS|OpenHarmony|\bArkWeb\//i.test(agent)) return 'harmony';
   if (/Android/i.test(agent)) return 'android';
+  if (/HuaweiBrowser/i.test(agent) && /\bMobile\b/i.test(agent)) return 'harmony';
   return 'other';
 }
 
@@ -176,7 +182,11 @@ function getBookingUrl(value, appProtocol) {
   }
 }
 
-function getBookingEntry(config) {
+function getBookingEntry(links) {
+  const config = links?.[platform];
+  if (platform === 'harmony') {
+    return getBookingUrl(config?.entry, 'jgj:') ?? getBookingUrl(links?.android?.direct, 'jgj:');
+  }
   if (platform !== 'android') return getBookingUrl(config?.entry);
   const isChrome = navigator.userAgentData?.brands?.some(({ brand }) => brand === 'Google Chrome');
   const intent = isChrome ? getBookingUrl(config?.entry, 'intent:') : undefined;
@@ -210,10 +220,10 @@ bookingButton.addEventListener('click', event => {
   if (!bookingLinks.entry) event.preventDefault();
   showBookingHelp();
 });
-fetchJson('./app-links.json?v=9').then(links => {
+fetchJson('./app-links.json?v=10').then(links => {
   const config = links?.[platform];
   bookingLinks = {
-    entry: getBookingEntry(config),
+    entry: getBookingEntry(links),
     store: getBookingUrl(config?.store)
   };
 }).catch(() => {}).finally(() => {

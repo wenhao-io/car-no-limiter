@@ -1,6 +1,6 @@
 const cachePrefix = `booking-shell:${self.registration.scope}:`;
-const cacheName = `${cachePrefix}9`;
-const shell = ['./', './index.html', './style.css?v=9', './main.mjs?v=9', './calendar.mjs', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
+const cacheName = `${cachePrefix}10`;
+const shell = ['./', './index.html', './style.css?v=9', './main.mjs?v=10', './calendar.mjs?v=10', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 const shellUrls = new Set(shell.map(path => new URL(path, self.registration.scope).href));
 
 self.addEventListener('install', event => {

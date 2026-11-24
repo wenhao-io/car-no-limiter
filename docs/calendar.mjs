@@ -69,5 +69,5 @@ export function restrictionFor(iso, data) {
   if (!calendar) return { weekday, kind: 'unknown', label: '待确认', detail: '尚未收录该年度节假日安排', source: noticeIndex };
   if (holiday) return { weekday, kind: 'projected', label: '预计不限行', detail: `${holiday.name}放假 · 请留意北京交管公告`, source: calendar.source };
 
-  return { weekday, kind: 'limited', label: '限行尾号', digits: [...rotation.weekdays[weekdayIndex - 1]], detail: '07:00–20:00 · 五环路以内（不含五环路）', source: policy.source };
+  return { weekday, kind: 'limited', label: '限行尾号', digits: [...rotation.weekdays[weekdayIndex - 1]], source: policy.source };
 }
